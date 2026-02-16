@@ -15,6 +15,7 @@ interface ItemCardProps {
   onMarkDone: () => void;
   onUpdate: (data: Record<string, any>) => void;
   onDelete: () => void;
+  isHost: boolean;
 }
 
 const statusConfig = {
@@ -25,7 +26,7 @@ const statusConfig = {
 
 export function ItemCard({
   item, columns, participants, currentParticipantId,
-  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete,
+  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete, isHost,
 }: ItemCardProps) {
   const config = statusConfig[item.status];
   const claimedParticipant = participants.find(p => p.id === item.claimedBy);
@@ -43,11 +44,15 @@ export function ItemCard({
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="font-semibold text-base min-w-0 flex-1">
-          <InlineEdit
-            value={primaryValue}
-            column={primaryColumn}
-            onSave={(val) => onUpdate({ [primaryColumn.key]: val })}
-          />
+          {isHost ? (
+            <InlineEdit
+              value={primaryValue}
+              column={primaryColumn}
+              onSave={(val) => onUpdate({ [primaryColumn.key]: val })}
+            />
+          ) : (
+            <span>{primaryValue || ""}</span>
+          )}
         </div>
         <span className={cn("px-2 py-0.5 rounded-md text-[11px] font-medium shrink-0 mt-1", config.badge)}>
           {config.label}
@@ -58,12 +63,16 @@ export function ItemCard({
         {columns.slice(1).map((col) => (
           <div key={col.key} className="min-w-0">
             <span className="text-[11px] text-muted-foreground/60 font-medium uppercase tracking-wider">{col.label}</span>
-            <InlineEdit
-              value={item.data[col.key]}
-              column={col}
-              onSave={(val) => onUpdate({ [col.key]: val })}
-              className="text-sm"
-            />
+            {isHost ? (
+              <InlineEdit
+                value={item.data[col.key]}
+                column={col}
+                onSave={(val) => onUpdate({ [col.key]: val })}
+                className="text-sm"
+              />
+            ) : (
+              <p className="text-sm">{item.data[col.key] || ""}</p>
+            )}
           </div>
         ))}
       </div>
@@ -113,13 +122,15 @@ export function ItemCard({
           {item.status === "claimed" && !isClaimedByMe && (
             <span className="text-xs text-blue-400 font-medium px-2">Taken</span>
           )}
-          <button
-            onClick={onDelete}
-            className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
-            title="Delete"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          {isHost && (
+            <button
+              onClick={onDelete}
+              className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+              title="Delete"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

@@ -14,6 +14,7 @@ interface ItemRowProps {
   onMarkDone: () => void;
   onUpdate: (data: Record<string, any>) => void;
   onDelete: () => void;
+  isHost: boolean;
 }
 
 const statusLabels = { unclaimed: "Open", claimed: "Claimed", done: "Done" };
@@ -25,7 +26,7 @@ const statusBadge = {
 
 export function ItemRow({
   item, columns, participants, currentParticipantId,
-  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete,
+  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete, isHost,
 }: ItemRowProps) {
   const claimedParticipant = participants.find(p => p.id === item.claimedBy);
   const isClaimedByMe = item.claimedBy === currentParticipantId;
@@ -34,12 +35,16 @@ export function ItemRow({
     <tr className="border-b border-border/30 hover:bg-accent/30 transition-colors">
       {columns.map((col) => (
         <td key={col.key} className="px-3 py-1.5">
-          <InlineEdit
-            value={item.data[col.key]}
-            column={col}
-            onSave={(val) => onUpdate({ [col.key]: val })}
-            className="text-sm"
-          />
+          {isHost ? (
+            <InlineEdit
+              value={item.data[col.key]}
+              column={col}
+              onSave={(val) => onUpdate({ [col.key]: val })}
+              className="text-sm"
+            />
+          ) : (
+            <span className="text-sm">{item.data[col.key] || ""}</span>
+          )}
         </td>
       ))}
       <td className="px-3 py-1.5">
@@ -74,9 +79,11 @@ export function ItemRow({
               </button>
             </>
           )}
-          <button onClick={onDelete} className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Delete">
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          {isHost && (
+            <button onClick={onDelete} className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Delete">
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </td>
     </tr>

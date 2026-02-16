@@ -17,11 +17,12 @@ interface CompactListProps {
   onMarkDone: (item: Item) => void;
   onUpdate: (item: Item, data: Record<string, any>) => void;
   onDelete: (item: Item) => void;
+  isHost: boolean;
 }
 
 function CompactRow({
   item, columns, participants, currentParticipantId, theme,
-  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete,
+  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete, isHost,
 }: {
   item: Item;
   columns: ColumnDef[];
@@ -33,6 +34,7 @@ function CompactRow({
   onMarkDone: () => void;
   onUpdate: (data: Record<string, any>) => void;
   onDelete: () => void;
+  isHost: boolean;
 }) {
   const claimedBy = participants.find(p => p.id === item.claimedBy);
   const isClaimedByMe = item.claimedBy === currentParticipantId;
@@ -71,24 +73,32 @@ function CompactRow({
 
         {/* Primary field */}
         <div className="font-medium min-w-0 flex-1 sm:flex-none sm:w-48">
-          <InlineEdit
-            value={primaryVal}
-            column={primaryCol}
-            onSave={(val) => onUpdate({ [primaryCol.key]: val })}
-            className="text-sm font-medium"
-          />
+          {isHost ? (
+            <InlineEdit
+              value={primaryVal}
+              column={primaryCol}
+              onSave={(val) => onUpdate({ [primaryCol.key]: val })}
+              className="text-sm font-medium"
+            />
+          ) : (
+            <span className="text-sm font-medium">{primaryVal || ""}</span>
+          )}
         </div>
 
         {/* Desktop: secondary fields */}
         <div className="hidden sm:flex items-center gap-3 flex-1 min-w-0">
           {columns.slice(1).map((col) => (
             <div key={col.key} className="min-w-0 flex-1 max-w-[160px]">
-              <InlineEdit
-                value={item.data[col.key]}
-                column={col}
-                onSave={(val) => onUpdate({ [col.key]: val })}
-                className="text-xs"
-              />
+              {isHost ? (
+                <InlineEdit
+                  value={item.data[col.key]}
+                  column={col}
+                  onSave={(val) => onUpdate({ [col.key]: val })}
+                  className="text-xs"
+                />
+              ) : (
+                <span className="text-xs text-muted-foreground">{item.data[col.key] || ""}</span>
+              )}
             </div>
           ))}
         </div>
@@ -159,13 +169,15 @@ function CompactRow({
               <Check className="w-3 h-3" />
             </span>
           )}
-          <button
-            onClick={onDelete}
-            className="p-2 text-transparent group-hover:text-muted-foreground/40 hover:!text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px]"
-            title="Delete"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          {isHost && (
+            <button
+              onClick={onDelete}
+              className="p-2 text-transparent group-hover:text-muted-foreground/40 hover:!text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px]"
+              title="Delete"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 
@@ -181,7 +193,7 @@ function CompactRow({
 
 export function CompactList({
   board, items, participants, currentParticipantId, theme,
-  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete,
+  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete, isHost,
 }: CompactListProps) {
   const columns = board.config.columns;
   const groupByField = board.config.summaryConfig?.groupByField;
@@ -223,6 +235,7 @@ export function CompactList({
                   onMarkDone={() => onMarkDone(item)}
                   onUpdate={(data) => onUpdate(item, data)}
                   onDelete={() => onDelete(item)}
+                  isHost={isHost}
                 />
               ))}
             </div>

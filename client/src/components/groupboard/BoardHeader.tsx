@@ -13,9 +13,10 @@ interface BoardHeaderProps {
   theme: BoardTheme;
   viewMode: "card" | "table" | "compact";
   onViewModeChange: (mode: "card" | "table" | "compact") => void;
+  isHost: boolean;
 }
 
-export function BoardHeader({ board, items, participants, theme, viewMode, onViewModeChange }: BoardHeaderProps) {
+export function BoardHeader({ board, items, participants, theme, viewMode, onViewModeChange, isHost }: BoardHeaderProps) {
   const [shareOpen, setShareOpen] = useState(false);
 
   const claimed = items.filter(i => i.status === "claimed" || i.status === "done").length;

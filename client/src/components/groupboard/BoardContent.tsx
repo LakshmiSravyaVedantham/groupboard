@@ -19,11 +19,12 @@ interface BoardContentProps {
   onMarkDone: (item: Item) => void;
   onUpdate: (item: Item, data: Record<string, any>) => void;
   onDelete: (item: Item) => void;
+  isHost: boolean;
 }
 
 export function BoardContent({
   board, items, participants, currentParticipantId, viewMode, theme,
-  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete,
+  onClaim, onUnclaim, onMarkDone, onUpdate, onDelete, isHost,
 }: BoardContentProps) {
   const columns = board.config.columns;
   const groupByField = board.config.summaryConfig?.groupByField;
@@ -55,6 +56,7 @@ export function BoardContent({
         onMarkDone={onMarkDone}
         onUpdate={onUpdate}
         onDelete={onDelete}
+        isHost={isHost}
       />
     );
   }
@@ -84,6 +86,7 @@ export function BoardContent({
     onMarkDone: () => onMarkDone(item),
     onUpdate: (data: Record<string, any>) => onUpdate(item, data),
     onDelete: () => onDelete(item),
+    isHost,
   });
 
   if (viewMode === "table") {

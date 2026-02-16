@@ -1,6 +1,7 @@
 import type {
   BoardWithDetails, Board, Item, Participant,
   CreateBoardInput, CreateItemInput, UpdateItemInput, JoinBoardInput,
+  CreateBoardResponse,
 } from "@shared/schema.ts";
 
 const BASE = "/api";
@@ -20,7 +21,7 @@ async function fetchJSON<T>(url: string, options?: RequestInit): Promise<T> {
 
 export const api = {
   createBoard: (input: CreateBoardInput) =>
-    fetchJSON<Board>("/boards", { method: "POST", body: JSON.stringify(input) }),
+    fetchJSON<CreateBoardResponse>("/boards", { method: "POST", body: JSON.stringify(input) }),
 
   getBoard: (shareCode: string) =>
     fetchJSON<BoardWithDetails>(`/boards/${shareCode}`),
