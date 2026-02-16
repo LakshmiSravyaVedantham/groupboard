@@ -41,7 +41,7 @@ export function BoardView() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
         <p className="text-sm text-muted-foreground">Loading board...</p>
       </div>
     );
@@ -51,10 +51,10 @@ export function BoardView() {
     return (
       <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
-          <AlertTriangle className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-          <h1 className="text-2xl font-bold mb-2">Board not found</h1>
-          <p className="text-muted-foreground mb-4">The code "{shareCode}" doesn't match any board.</p>
-          <Link href="/" className="text-primary text-sm hover:underline">Go to homepage</Link>
+          <AlertTriangle className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+          <h1 className="text-xl font-bold mb-2">Board not found</h1>
+          <p className="text-sm text-muted-foreground mb-4">The code "{shareCode}" doesn't match any board.</p>
+          <Link href="/" className="text-primary text-sm hover:underline">Go home</Link>
         </div>
       </div>
     );
@@ -68,21 +68,21 @@ export function BoardView() {
     if (requireJoin()) return;
     updateItem.mutate(
       { boardId: board.id, itemId: item.id, input: { status: "claimed", claimedBy: participant!.id } },
-      { onSuccess: () => toast(`You claimed "${item.data[primaryCol?.key] || "item"}"!`) },
+      { onSuccess: () => toast(`Claimed "${item.data[primaryCol?.key] || "item"}"`) },
     );
   };
 
   const handleUnclaim = (item: Item) => {
     updateItem.mutate(
       { boardId: board.id, itemId: item.id, input: { status: "unclaimed", claimedBy: null } },
-      { onSuccess: () => toast("Item unclaimed", "info") },
+      { onSuccess: () => toast("Unclaimed", "info") },
     );
   };
 
   const handleMarkDone = (item: Item) => {
     updateItem.mutate(
       { boardId: board.id, itemId: item.id, input: { status: "done" } },
-      { onSuccess: () => toast("Marked as done!") },
+      { onSuccess: () => toast("Done!") },
     );
   };
 
@@ -94,7 +94,7 @@ export function BoardView() {
     if (!deleteTarget) return;
     deleteItem.mutate(
       { boardId: board.id, itemId: deleteTarget.id },
-      { onSuccess: () => toast("Item deleted", "info") },
+      { onSuccess: () => toast("Deleted", "info") },
     );
     setDeleteTarget(null);
   };
@@ -102,7 +102,7 @@ export function BoardView() {
   const handleAddItem = (itemData: Record<string, any>) => {
     addItem.mutate(
       { boardId: board.id, input: { data: itemData } },
-      { onSuccess: () => toast("Item added!") },
+      { onSuccess: () => toast("Added!") },
     );
   };
 
@@ -116,8 +116,8 @@ export function BoardView() {
   return (
     <div className={cn("min-h-screen flex flex-col", theme.pageBg)}>
       {/* Top nav */}
-      <div className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-20">
-        <div className="max-w-5xl mx-auto w-full px-4 py-2 flex items-center justify-between">
+      <div className="border-b border-border/50 bg-background/80 backdrop-blur-md sticky top-0 z-20">
+        <div className="max-w-5xl mx-auto w-full px-5 py-2.5 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors">
             <Home className="w-4 h-4" />
             <span className="hidden sm:inline font-medium">GroupBoard</span>
@@ -130,20 +130,20 @@ export function BoardView() {
               >
                 {participant.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
               </span>
-              <span className="text-muted-foreground">{participant.name}</span>
+              <span className="text-muted-foreground text-xs">{participant.name}</span>
             </div>
           ) : (
             <button
               onClick={() => setShowJoin(true)}
-              className={cn("text-sm font-medium px-3 py-1 rounded-lg text-white", theme.claimBg, theme.claimHover)}
+              className="text-sm font-medium px-3 py-1.5 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
             >
-              Join Board
+              Join
             </button>
           )}
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto w-full px-4 py-5 flex-1 flex flex-col">
+      <div className="max-w-5xl mx-auto w-full px-5 py-5 flex-1 flex flex-col">
         <BoardHeader
           board={board}
           items={items}
@@ -155,10 +155,10 @@ export function BoardView() {
 
         {/* Join banner */}
         {!isJoined && !joinDismissed && (
-          <div className={cn("mb-4 p-3 rounded-xl border flex items-center justify-between gap-3", theme.accentLight, theme.accentBorder)}>
+          <div className={cn("mb-4 p-3.5 rounded-xl border flex items-center justify-between gap-3", theme.accentLight, theme.accentBorder)}>
             <p className="text-sm">
-              <span className={cn("font-semibold", theme.accent)}>Join to collaborate</span>
-              <span className="text-muted-foreground"> — claim items and your name appears on the board</span>
+              <span className={cn("font-medium", theme.accent)}>Join to claim items</span>
+              <span className="text-muted-foreground"> — your name will appear on what you pick</span>
             </p>
             <div className="flex items-center gap-2 shrink-0">
               <button
