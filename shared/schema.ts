@@ -35,6 +35,7 @@ export const boardSchema = z.object({
   templateType: z.enum(templateTypes),
   shareCode: z.string().length(6),
   config: boardConfigSchema,
+  hostParticipantId: z.number().nullable(),
   createdAt: z.string(),
 });
 
@@ -45,6 +46,8 @@ export const createBoardSchema = z.object({
   description: z.string().optional(),
   templateType: z.enum(templateTypes),
   config: boardConfigSchema.optional(),
+  hostName: z.string().min(1),
+  hostColor: z.string(),
 });
 
 export type CreateBoardInput = z.infer<typeof createBoardSchema>;
@@ -107,4 +110,10 @@ export interface BoardWithDetails {
   board: Board;
   items: Item[];
   participants: Participant[];
+}
+
+// Create board response (includes host participant for auto-join)
+export interface CreateBoardResponse {
+  board: Board;
+  hostParticipant: Participant;
 }

@@ -1,12 +1,12 @@
 import type {
   Board, Item, Participant,
   CreateBoardInput, CreateItemInput, UpdateItemInput,
-  JoinBoardInput, BoardWithDetails, BoardConfig,
+  JoinBoardInput, BoardWithDetails, BoardConfig, CreateBoardResponse,
 } from "../shared/schema.js";
 import { templates } from "../shared/templates.js";
 
 export interface IStorage {
-  createBoard(input: CreateBoardInput): Promise<Board>;
+  createBoard(input: CreateBoardInput): Promise<CreateBoardResponse>;
   getBoardByShareCode(shareCode: string): Promise<BoardWithDetails | null>;
   updateBoard(id: number, updates: Partial<Pick<Board, "title" | "description" | "config">>): Promise<Board | null>;
   addItem(boardId: number, input: CreateItemInput): Promise<Item>;
@@ -33,7 +33,7 @@ export class MemStorage implements IStorage {
   private nextItemId = 1;
   private nextParticipantId = 1;
 
-  async createBoard(input: CreateBoardInput): Promise<Board> {
+  async createBoard(input: CreateBoardInput): Promise<CreateBoardResponse> {
     const template = templates[input.templateType];
     const config: BoardConfig = input.config ?? template.config;
 
@@ -44,26 +44,29 @@ export class MemStorage implements IStorage {
       templateType: input.templateType,
       shareCode: generateShareCode(),
       config,
+      hostParticipantId: null, // will be set after creating participant
       createdAt: new Date().toISOString(),
     };
 
     this.boards.set(board.id, board);
 
-    // Add sample items from template
-    for (let i = 0; i < template.sampleItems.length; i++) {
-      const item: Item = {
-        id: this.nextItemId++,
-        boardId: board.id,
-        data: template.sampleItems[i],
-        status: "unclaimed",
-        claimedBy: null,
-        order: i,
-        createdAt: new Date().toISOString(),
-      };
-      this.items.set(item.id, item);
-    }
+    // Create host participant automatically
+    const hostParticipant: Participant = {
+      id: this.nextParticipantId++,
+      boardId: board.id,
+      name: input.hostName,
+      avatarColor: input.hostColor,
+      joinedAt: new Date().toISOString(),
+    };
+    this.participants.set(hostParticipant.id, hostParticipant);
 
-    return board;
+    // Link host to board
+    board.hostParticipantId = hostParticipant.id;
+    this.boards.set(board.id, board);
+
+    // No sample items — host starts with a blank board
+
+    return { board, hostParticipant };
   }
 
   async getBoardByShareCode(shareCode: string): Promise<BoardWithDetails | null> {

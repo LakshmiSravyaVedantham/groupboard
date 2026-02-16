@@ -11,8 +11,8 @@ router.post("/api/boards", async (req, res) => {
     res.status(400).json({ error: parsed.error.format() });
     return;
   }
-  const board = await storage.createBoard(parsed.data);
-  res.status(201).json(board);
+  const result = await storage.createBoard(parsed.data);
+  res.status(201).json(result);
 });
 
 // Get board by share code
