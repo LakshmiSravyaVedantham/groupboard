@@ -35,14 +35,13 @@ export function BoardContent({
         animate={{ opacity: 1 }}
         className="text-center py-20 text-muted-foreground"
       >
-        <ClipboardList className="w-12 h-12 mx-auto mb-3 text-muted-foreground/30" />
-        <p className="text-lg font-medium text-foreground">No items yet</p>
-        <p className="text-sm mt-1">Use the form below to add your first item.</p>
+        <ClipboardList className="w-10 h-10 mx-auto mb-3 text-muted-foreground/20" />
+        <p className="text-base font-medium text-foreground">No items yet</p>
+        <p className="text-sm mt-1 text-muted-foreground/60">Add your first item below.</p>
       </motion.div>
     );
   }
 
-  // Compact list view (new default — "better than sheets")
   if (viewMode === "compact") {
     return (
       <CompactList
@@ -60,7 +59,6 @@ export function BoardContent({
     );
   }
 
-  // Group items by category
   const groups: { label: string; items: Item[] }[] = [];
   if (groupByField) {
     const map = new Map<string, Item[]>();
@@ -88,21 +86,20 @@ export function BoardContent({
     onDelete: () => onDelete(item),
   });
 
-  // Table view
   if (viewMode === "table") {
     return (
-      <div className="overflow-x-auto rounded-lg border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-left">
           <thead>
-            <tr className="border-b bg-muted/50">
+            <tr className="border-b border-border bg-card">
               {columns.map((col) => (
-                <th key={col.key} className="px-3 py-2.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <th key={col.key} className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
                   {col.label}
                 </th>
               ))}
-              <th className="px-3 py-2.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
-              <th className="px-3 py-2.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Claimed by</th>
-              <th className="px-3 py-2.5 text-xs font-semibold text-muted-foreground uppercase tracking-wider w-28">Actions</th>
+              <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">Status</th>
+              <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">By</th>
+              <th className="px-3 py-2.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider w-24"></th>
             </tr>
           </thead>
           <tbody>
@@ -125,7 +122,6 @@ export function BoardContent({
     );
   }
 
-  // Card view
   return (
     <div>
       <AnimatePresence mode="popLayout">

@@ -45,7 +45,6 @@ function CompactRow({
       ? theme.claimedBg
       : theme.unclaimedBg;
 
-  // Build a mobile subtitle from secondary fields
   const secondaryParts = columns.slice(1)
     .map(col => item.data[col.key])
     .filter(v => v !== undefined && v !== null && v !== "");
@@ -53,22 +52,21 @@ function CompactRow({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, x: -10 }}
+      initial={{ opacity: 0, x: -8 }}
       animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: 10 }}
+      exit={{ opacity: 0, x: 8 }}
       className={cn(
-        "px-3 py-2.5 rounded-lg border transition-all group",
+        "px-3 py-2.5 rounded-lg border border-border/50 transition-all group",
         bgClass,
-        item.status === "unclaimed" && "hover:shadow-md hover:border-gray-300"
+        item.status === "unclaimed" && "hover:border-border"
       )}
-      style={claimedBy ? { borderLeftWidth: 4, borderLeftColor: claimedBy.avatarColor } : {}}
+      style={claimedBy ? { borderLeftWidth: 3, borderLeftColor: claimedBy.avatarColor } : {}}
     >
-      {/* Main row */}
       <div className="flex items-center gap-2 sm:gap-3">
-        {/* Status dot */}
+        {/* Status indicator */}
         <div className={cn(
-          "w-2.5 h-2.5 rounded-full shrink-0",
-          item.status === "done" ? "bg-green-500" : item.status === "claimed" ? "bg-blue-500" : "bg-gray-300"
+          "w-2 h-2 rounded-full shrink-0",
+          item.status === "done" ? "bg-emerald-400" : item.status === "claimed" ? "bg-blue-400" : "bg-muted-foreground/20"
         )} />
 
         {/* Primary field */}
@@ -95,7 +93,7 @@ function CompactRow({
           ))}
         </div>
 
-        {/* Desktop: who claimed it */}
+        {/* Desktop: claimer */}
         <div className="shrink-0 w-28 hidden sm:flex items-center gap-1.5">
           {claimedBy ? (
             <>
@@ -105,14 +103,14 @@ function CompactRow({
               >
                 {claimedBy.name.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2)}
               </span>
-              <span className="text-xs truncate">{claimedBy.name}</span>
+              <span className="text-xs text-muted-foreground truncate">{claimedBy.name}</span>
             </>
           ) : (
-            <span className="text-xs text-muted-foreground/40 italic">unclaimed</span>
+            <span className="text-xs text-muted-foreground/30">unclaimed</span>
           )}
         </div>
 
-        {/* Mobile: claimed avatar */}
+        {/* Mobile: avatar */}
         {claimedBy && (
           <span
             className="sm:hidden w-6 h-6 rounded-full inline-flex items-center justify-center text-white text-[9px] font-bold shrink-0"
@@ -123,14 +121,14 @@ function CompactRow({
           </span>
         )}
 
-        {/* Action buttons */}
+        {/* Actions */}
         <div className="flex items-center gap-0.5 shrink-0">
           {item.status === "unclaimed" && (
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={onClaim}
               className={cn(
-                "flex items-center gap-1 px-2.5 py-2 rounded-lg text-white text-xs font-semibold transition-colors min-h-[40px]",
+                "flex items-center gap-1 px-2.5 py-2 rounded-lg text-white text-xs font-semibold transition-colors min-h-[36px]",
                 theme.claimBg, theme.claimHover
               )}
             >
@@ -143,27 +141,27 @@ function CompactRow({
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={onMarkDone}
-                className="flex items-center gap-1 px-2 py-2 rounded-lg bg-green-600 text-white text-xs font-semibold hover:bg-green-700 min-h-[40px]"
+                className="flex items-center gap-1 px-2 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-500 min-h-[36px]"
               >
                 <Check className="w-3.5 h-3.5" />
                 <span className="hidden sm:inline">Done</span>
               </motion.button>
-              <button onClick={onUnclaim} className="p-2 text-muted-foreground hover:bg-muted rounded-lg min-h-[40px]" title="Unclaim">
+              <button onClick={onUnclaim} className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg min-h-[36px]" title="Unclaim">
                 <Undo2 className="w-3.5 h-3.5" />
               </button>
             </>
           )}
           {item.status === "claimed" && !isClaimedByMe && (
-            <span className="text-[11px] text-blue-600 font-medium px-1.5">Taken</span>
+            <span className="text-[11px] text-blue-400 font-medium px-1.5">Taken</span>
           )}
           {item.status === "done" && (
-            <span className="text-[11px] text-green-600 font-medium px-1.5 flex items-center gap-0.5">
+            <span className="text-[11px] text-emerald-400 font-medium px-1.5 flex items-center gap-0.5">
               <Check className="w-3 h-3" />
             </span>
           )}
           <button
             onClick={onDelete}
-            className="p-2 text-muted-foreground/0 group-hover:text-muted-foreground/40 hover:!text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[40px]"
+            className="p-2 text-transparent group-hover:text-muted-foreground/40 hover:!text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px]"
             title="Delete"
           >
             <Trash2 className="w-3.5 h-3.5" />
@@ -171,7 +169,7 @@ function CompactRow({
         </div>
       </div>
 
-      {/* Mobile: secondary detail line */}
+      {/* Mobile subtitle */}
       {secondaryParts.length > 0 && (
         <div className="sm:hidden flex items-center gap-2 mt-1 ml-[18px] text-xs text-muted-foreground truncate">
           {secondaryParts.join(" · ")}
@@ -211,7 +209,7 @@ export function CompactList({
             {group.label && (
               <CategoryHeader category={group.label} count={group.items.length} />
             )}
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               {group.items.map((item) => (
                 <CompactRow
                   key={item.id}

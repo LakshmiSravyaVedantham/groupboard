@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { X, UserPlus } from "lucide-react";
+import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { avatarColors } from "@shared/templates.ts";
 
@@ -28,28 +28,24 @@ export function JoinDialog({ onJoin, onClose, loading }: JoinDialogProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="bg-background rounded-t-2xl sm:rounded-xl shadow-xl max-w-md w-full p-6 sm:p-7"
+        className="bg-card border border-border rounded-t-2xl sm:rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-7"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Drag handle on mobile */}
         <div className="w-10 h-1 bg-muted rounded-full mx-auto mb-4 sm:hidden" />
 
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold flex items-center gap-2">
-            <UserPlus className="w-5 h-5 text-primary" />
-            Join this board
-          </h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-muted rounded-lg transition-colors">
-            <X className="w-5 h-5" />
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold">Join board</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-accent rounded-lg transition-colors">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
         {/* Avatar preview */}
-        <div className="flex justify-center mb-5">
+        <div className="flex justify-center mb-6">
           <div
-            className="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold shadow-lg transition-colors"
+            className="w-14 h-14 rounded-full flex items-center justify-center text-white text-lg font-bold transition-colors"
             style={{ backgroundColor: selectedColor }}
           >
             {getInitials(name)}
@@ -58,30 +54,30 @@ export function JoinDialog({ onJoin, onClose, loading }: JoinDialogProps) {
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="text-sm font-medium block mb-1.5">Your name</label>
+            <label className="text-sm font-medium text-muted-foreground block mb-2">Your name</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Enter your name"
               autoFocus
-              className="w-full px-3 py-3 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+              className="w-full px-4 py-3 bg-background border border-border rounded-xl text-sm outline-none focus:ring-1 focus:ring-primary/30 focus:border-primary/50 placeholder:text-muted-foreground/30"
             />
           </div>
 
           <div>
-            <label className="text-sm font-medium block mb-2.5">Pick your color</label>
-            <div className="flex gap-3 justify-center flex-wrap">
+            <label className="text-sm font-medium text-muted-foreground block mb-3">Color</label>
+            <div className="flex gap-2.5 justify-center flex-wrap">
               {avatarColors.map((color) => (
                 <button
                   key={color}
                   type="button"
                   onClick={() => setSelectedColor(color)}
                   className={cn(
-                    "w-11 h-11 rounded-full transition-all",
+                    "w-10 h-10 rounded-full transition-all",
                     selectedColor === color
-                      ? "ring-2 ring-offset-2 ring-primary scale-110 shadow-md"
-                      : "hover:scale-105 opacity-70 hover:opacity-100"
+                      ? "ring-2 ring-offset-2 ring-offset-card ring-white/50 scale-110"
+                      : "opacity-50 hover:opacity-80 hover:scale-105"
                   )}
                   style={{ backgroundColor: color }}
                 />
@@ -92,9 +88,9 @@ export function JoinDialog({ onJoin, onClose, loading }: JoinDialogProps) {
           <button
             type="submit"
             disabled={!name.trim() || loading}
-            className="w-full py-3 bg-primary text-primary-foreground rounded-lg text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-40 min-h-[48px]"
+            className="w-full py-3 bg-primary text-primary-foreground rounded-xl text-sm font-semibold hover:bg-primary/90 transition-colors disabled:opacity-30 min-h-[44px]"
           >
-            {loading ? "Joining..." : "Join Board"}
+            {loading ? "Joining..." : "Join"}
           </button>
         </form>
       </div>

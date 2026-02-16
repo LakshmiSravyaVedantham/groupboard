@@ -18,9 +18,9 @@ interface ItemCardProps {
 }
 
 const statusConfig = {
-  unclaimed: { label: "Available", bg: "bg-white border-gray-200 hover:border-gray-300", badge: "bg-gray-100 text-gray-600" },
-  claimed: { label: "Claimed", bg: "bg-blue-50/60 border-blue-200", badge: "bg-blue-100 text-blue-700" },
-  done: { label: "Done", bg: "bg-green-50/60 border-green-200", badge: "bg-green-100 text-green-700" },
+  unclaimed: { label: "Open", bg: "bg-card border-border hover:border-border/80", badge: "bg-muted text-muted-foreground" },
+  claimed: { label: "Claimed", bg: "bg-blue-950/20 border-blue-800/30", badge: "bg-blue-900/40 text-blue-300" },
+  done: { label: "Done", bg: "bg-emerald-950/20 border-emerald-800/30", badge: "bg-emerald-900/40 text-emerald-300" },
 };
 
 export function ItemCard({
@@ -36,12 +36,11 @@ export function ItemCard({
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{ opacity: 0, scale: 0.97 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className={cn("rounded-xl border p-4 transition-all shadow-sm hover:shadow-md", config.bg)}
+      exit={{ opacity: 0, scale: 0.97 }}
+      className={cn("rounded-xl border p-4 transition-all", config.bg)}
     >
-      {/* Header row: primary field + status badge */}
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="font-semibold text-base min-w-0 flex-1">
           <InlineEdit
@@ -50,16 +49,15 @@ export function ItemCard({
             onSave={(val) => onUpdate({ [primaryColumn.key]: val })}
           />
         </div>
-        <span className={cn("px-2 py-0.5 rounded-full text-[11px] font-medium shrink-0 mt-1", config.badge)}>
+        <span className={cn("px-2 py-0.5 rounded-md text-[11px] font-medium shrink-0 mt-1", config.badge)}>
           {config.label}
         </span>
       </div>
 
-      {/* Secondary fields */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-0.5 mb-3">
         {columns.slice(1).map((col) => (
-          <div key={col.key} className="min-w-0 group/field">
-            <span className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">{col.label}</span>
+          <div key={col.key} className="min-w-0">
+            <span className="text-[11px] text-muted-foreground/60 font-medium uppercase tracking-wider">{col.label}</span>
             <InlineEdit
               value={item.data[col.key]}
               column={col}
@@ -70,8 +68,7 @@ export function ItemCard({
         ))}
       </div>
 
-      {/* Footer: claimed by + actions */}
-      <div className="flex items-center justify-between pt-2.5 border-t border-border/40">
+      <div className="flex items-center justify-between pt-2.5 border-t border-border/30">
         <div className="flex items-center gap-1.5 min-h-[36px]">
           {claimedParticipant ? (
             <>
@@ -79,53 +76,49 @@ export function ItemCard({
               <span className="text-xs text-muted-foreground">{claimedParticipant.name}</span>
             </>
           ) : (
-            <span className="text-xs text-muted-foreground/60">No one yet</span>
+            <span className="text-xs text-muted-foreground/40">No one yet</span>
           )}
         </div>
 
         <div className="flex items-center gap-1">
-          {/* Always show claim button for unclaimed items — triggers join if needed */}
           {item.status === "unclaimed" && (
             <motion.button
               whileTap={{ scale: 0.93 }}
               onClick={onClaim}
-              className="flex items-center gap-1.5 px-3.5 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors min-h-[40px] shadow-sm"
+              className="flex items-center gap-1.5 px-3.5 py-2 bg-primary text-primary-foreground rounded-lg text-xs font-semibold hover:bg-primary/90 transition-colors min-h-[36px]"
             >
-              <Hand className="w-4 h-4" />
-              I'll bring this!
+              <Hand className="w-3.5 h-3.5" />
+              Claim
             </motion.button>
           )}
-
           {item.status === "claimed" && isClaimedByMe && (
             <>
               <motion.button
                 whileTap={{ scale: 0.93 }}
                 onClick={onMarkDone}
-                className="flex items-center gap-1.5 px-3 py-2 bg-green-600 text-white rounded-lg text-xs font-semibold hover:bg-green-700 transition-colors min-h-[40px] shadow-sm"
+                className="flex items-center gap-1.5 px-3 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-500 min-h-[36px]"
               >
-                <Check className="w-4 h-4" />
-                Mark done
+                <Check className="w-3.5 h-3.5" />
+                Done
               </motion.button>
               <button
                 onClick={onUnclaim}
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
-                title="Unclaim this item"
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-accent rounded-lg min-h-[36px] min-w-[36px] flex items-center justify-center"
+                title="Unclaim"
               >
-                <Undo2 className="w-4 h-4" />
+                <Undo2 className="w-3.5 h-3.5" />
               </button>
             </>
           )}
-
           {item.status === "claimed" && !isClaimedByMe && (
-            <span className="text-xs text-blue-600 font-medium px-2">Taken</span>
+            <span className="text-xs text-blue-400 font-medium px-2">Taken</span>
           )}
-
           <button
             onClick={onDelete}
-            className="p-2 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center"
-            title="Delete item"
+            className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+            title="Delete"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </div>

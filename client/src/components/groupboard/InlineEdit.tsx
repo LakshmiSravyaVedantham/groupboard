@@ -42,7 +42,7 @@ export function InlineEdit({ value, column, onSave, className }: InlineEditProps
 
   if (!editing) {
     const displayValue = value === undefined || value === null || value === ""
-      ? column.placeholder || "Click to edit"
+      ? column.placeholder || "—"
       : column.type === "number" && column.label.includes("$")
         ? `$${value}`
         : String(value);
@@ -53,13 +53,13 @@ export function InlineEdit({ value, column, onSave, className }: InlineEditProps
       <button
         onClick={() => { setEditValue(value ?? ""); setEditing(true); }}
         className={cn(
-          "text-left px-2 py-1 rounded-md hover:bg-muted/80 transition-colors min-h-[32px] cursor-text w-full group/edit relative",
-          isEmpty && "text-muted-foreground/50 italic",
+          "text-left px-2 py-1 rounded-md hover:bg-accent transition-colors min-h-[28px] cursor-text w-full group/edit relative",
+          isEmpty && "text-muted-foreground/30",
           className
         )}
       >
         <span>{displayValue}</span>
-        <Pencil className="w-3 h-3 text-muted-foreground/0 group-hover/edit:text-muted-foreground/50 absolute right-1 top-1/2 -translate-y-1/2 transition-colors" />
+        <Pencil className="w-3 h-3 text-transparent group-hover/edit:text-muted-foreground/40 absolute right-1 top-1/2 -translate-y-1/2 transition-colors" />
       </button>
     );
   }
@@ -73,7 +73,7 @@ export function InlineEdit({ value, column, onSave, className }: InlineEditProps
         onBlur={commit}
         onKeyDown={handleKeyDown}
         className={cn(
-          "px-2 py-1 rounded-md border-2 border-primary/50 bg-background text-sm w-full outline-none ring-2 ring-primary/10",
+          "px-2 py-1 rounded-md border border-primary/40 bg-card text-sm w-full outline-none ring-1 ring-primary/20",
           className
         )}
       >
@@ -95,7 +95,7 @@ export function InlineEdit({ value, column, onSave, className }: InlineEditProps
       onKeyDown={handleKeyDown}
       placeholder={column.placeholder}
       className={cn(
-        "px-2 py-1 rounded-md border-2 border-primary/50 bg-background text-sm w-full outline-none ring-2 ring-primary/10",
+        "px-2 py-1 rounded-md border border-primary/40 bg-card text-sm w-full outline-none ring-1 ring-primary/20",
         className
       )}
     />

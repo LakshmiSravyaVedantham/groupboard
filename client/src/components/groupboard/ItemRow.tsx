@@ -16,11 +16,11 @@ interface ItemRowProps {
   onDelete: () => void;
 }
 
-const statusLabels = { unclaimed: "Available", claimed: "Claimed", done: "Done" };
+const statusLabels = { unclaimed: "Open", claimed: "Claimed", done: "Done" };
 const statusBadge = {
-  unclaimed: "bg-gray-100 text-gray-600",
-  claimed: "bg-blue-100 text-blue-700",
-  done: "bg-green-100 text-green-700",
+  unclaimed: "bg-muted text-muted-foreground",
+  claimed: "bg-blue-900/40 text-blue-300",
+  done: "bg-emerald-900/40 text-emerald-300",
 };
 
 export function ItemRow({
@@ -31,7 +31,7 @@ export function ItemRow({
   const isClaimedByMe = item.claimedBy === currentParticipantId;
 
   return (
-    <tr className="border-b hover:bg-muted/30 transition-colors">
+    <tr className="border-b border-border/30 hover:bg-accent/30 transition-colors">
       {columns.map((col) => (
         <td key={col.key} className="px-3 py-1.5">
           <InlineEdit
@@ -43,7 +43,7 @@ export function ItemRow({
         </td>
       ))}
       <td className="px-3 py-1.5">
-        <span className={cn("px-2 py-0.5 rounded-full text-[11px] font-medium", statusBadge[item.status])}>
+        <span className={cn("px-2 py-0.5 rounded-md text-[11px] font-medium", statusBadge[item.status])}>
           {statusLabels[item.status]}
         </span>
       </td>
@@ -51,31 +51,31 @@ export function ItemRow({
         {claimedParticipant ? (
           <div className="flex items-center gap-1.5">
             <ParticipantAvatar participant={claimedParticipant} size="xs" />
-            <span className="text-xs">{claimedParticipant.name}</span>
+            <span className="text-xs text-muted-foreground">{claimedParticipant.name}</span>
           </div>
         ) : (
-          <span className="text-xs text-muted-foreground/50">—</span>
+          <span className="text-xs text-muted-foreground/30">—</span>
         )}
       </td>
       <td className="px-3 py-1.5">
         <div className="flex items-center gap-0.5">
           {item.status === "unclaimed" && (
-            <button onClick={onClaim} className="p-2 text-primary hover:bg-primary/10 rounded-lg min-w-[36px] min-h-[36px] flex items-center justify-center" title="Claim this item">
-              <Hand className="w-4 h-4" />
+            <button onClick={onClaim} className="p-2 text-primary hover:bg-primary/10 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Claim">
+              <Hand className="w-3.5 h-3.5" />
             </button>
           )}
           {item.status === "claimed" && isClaimedByMe && (
             <>
-              <button onClick={onMarkDone} className="p-2 text-green-600 hover:bg-green-50 rounded-lg min-w-[36px] min-h-[36px] flex items-center justify-center" title="Mark done">
-                <Check className="w-4 h-4" />
+              <button onClick={onMarkDone} className="p-2 text-emerald-400 hover:bg-emerald-950/30 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Done">
+                <Check className="w-3.5 h-3.5" />
               </button>
-              <button onClick={onUnclaim} className="p-2 text-muted-foreground hover:bg-muted rounded-lg min-w-[36px] min-h-[36px] flex items-center justify-center" title="Unclaim">
-                <Undo2 className="w-4 h-4" />
+              <button onClick={onUnclaim} className="p-2 text-muted-foreground hover:bg-accent rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Unclaim">
+                <Undo2 className="w-3.5 h-3.5" />
               </button>
             </>
           )}
-          <button onClick={onDelete} className="p-2 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/10 rounded-lg min-w-[36px] min-h-[36px] flex items-center justify-center" title="Delete item">
-            <Trash2 className="w-4 h-4" />
+          <button onClick={onDelete} className="p-2 text-muted-foreground/20 hover:text-destructive hover:bg-destructive/10 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center" title="Delete">
+            <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
       </td>

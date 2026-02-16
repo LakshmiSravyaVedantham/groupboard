@@ -10,9 +10,9 @@ const iconMap = {
 };
 
 const styleMap = {
-  success: "bg-green-600 text-white",
+  success: "bg-emerald-600 text-white",
   error: "bg-red-600 text-white",
-  info: "bg-blue-600 text-white",
+  info: "bg-card border border-border text-foreground",
 };
 
 export function ToastContainer() {
@@ -30,7 +30,7 @@ export function ToastContainer() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               className={cn(
-                "flex items-center gap-2 px-4 py-2.5 rounded-full shadow-lg text-sm font-medium pointer-events-auto cursor-pointer",
+                "flex items-center gap-2 px-4 py-2.5 rounded-xl shadow-lg text-sm font-medium pointer-events-auto cursor-pointer",
                 styleMap[t.type]
               )}
               onClick={() => removeToast(t.id)}
