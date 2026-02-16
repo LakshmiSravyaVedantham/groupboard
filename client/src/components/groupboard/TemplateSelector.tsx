@@ -17,53 +17,51 @@ interface TemplateSelectorProps {
 
 export function TemplateSelector({ onSelect }: TemplateSelectorProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
       {Object.values(templates).map((template, i) => {
         const Icon = iconMap[template.icon];
         const theme = templateThemes[template.type];
         return (
           <motion.button
             key={template.type}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08, duration: 0.3 }}
-            whileHover={{ scale: 1.02, y: -3 }}
+            transition={{ delay: i * 0.06, duration: 0.35 }}
+            whileHover={{ y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => onSelect(template.type)}
-            className="flex flex-col items-start gap-3 rounded-xl border-2 border-transparent hover:border-white/50 hover:shadow-xl transition-all text-left cursor-pointer group overflow-hidden relative"
+            className="flex flex-col items-start rounded-xl border border-border bg-card hover:bg-accent/50 hover:border-border/80 transition-all text-left cursor-pointer group overflow-hidden"
           >
-            {/* Gradient banner at top */}
-            <div className={cn("w-full px-5 pt-5 pb-3", theme.headerGradient)}>
-              <div className="flex items-center justify-between">
-                <div className="p-2 rounded-lg bg-white/25 backdrop-blur-sm">
-                  {Icon && <Icon className="w-5 h-5 text-white" />}
+            {/* Color strip at top */}
+            <div className={cn("w-full h-1", theme.headerGradient)} />
+
+            <div className="p-5 w-full">
+              <div className="flex items-center justify-between mb-3">
+                <div className={cn("p-2.5 rounded-lg", theme.accentLight)}>
+                  {Icon && <Icon className={cn("w-5 h-5", theme.accent)} />}
                 </div>
-                <ArrowRight className="w-4 h-4 text-white/50 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <ArrowRight className="w-4 h-4 text-muted-foreground/0 group-hover:text-muted-foreground transition-colors" />
               </div>
-              <h3 className="font-bold text-lg text-white mt-2 drop-shadow-sm">{template.label}</h3>
-            </div>
 
-            {/* Details area */}
-            <div className="px-5 pb-5 w-full">
-              <p className="text-sm text-muted-foreground">{template.description}</p>
+              <h3 className="font-semibold text-foreground mb-1">{template.label}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{template.description}</p>
 
-              {/* Column chips */}
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {template.config.columns.map((col) => (
+              {/* Column tags */}
+              <div className="flex flex-wrap gap-1.5 mt-4">
+                {template.config.columns.slice(0, 3).map((col) => (
                   <span
                     key={col.key}
-                    className={cn("px-2 py-0.5 rounded-full text-[11px] font-medium", theme.needsChip, theme.needsChipText)}
+                    className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground"
                   >
                     {col.label}
                   </span>
                 ))}
+                {template.config.columns.length > 3 && (
+                  <span className="px-2 py-0.5 rounded-md text-[11px] font-medium bg-muted text-muted-foreground">
+                    +{template.config.columns.length - 3}
+                  </span>
+                )}
               </div>
-
-              {template.sampleItems.length > 0 && (
-                <p className="text-[11px] text-muted-foreground/60 mt-2">
-                  Includes {template.sampleItems.length} sample items
-                </p>
-              )}
             </div>
           </motion.button>
         );
